@@ -14,7 +14,7 @@ export class UserEntity {
   id: number;
 
   @Column({ length: 100 })
-  name: string;
+  userName: string;
 
   @Column({ length: 50, unique: true })
   email: string;
@@ -25,18 +25,15 @@ export class UserEntity {
   @Column({ nullable: false })
   password: string;
 
+  @Column({ length: 100 })
+  photoURL: string;
+
   @OneToOne(() => UserAddressEntity, { eager: true, cascade: true })
   @JoinColumn({ name: 'userAddressId' })
-  UserAddress: UserAddressEntity;
+  userAddress: UserAddressEntity;
 
   @Column({ nullable: false })
   salt: string;
-
-  @Column({ type: 'varchar', length: 64 })
-  confirmationToken: string;
-
-  @Column({ type: 'varchar', length: 64 })
-  recoverToken: string;
 
   async checkPassword(password: string): Promise<boolean> {
     const hash = await bcrypt.hash(password, this.salt);

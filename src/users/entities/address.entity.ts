@@ -1,9 +1,9 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ name: 'connectlab.UserAdress' })
+@Entity({ name: 'UserAdress' })
 export class UserAddressEntity {
   @PrimaryGeneratedColumn()
-  addressId: number;
+  userAddressId: number;
 
   @Column()
   CEP: string;
