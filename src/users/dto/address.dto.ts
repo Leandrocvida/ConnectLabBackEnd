@@ -1,13 +1,33 @@
-import { IsNumber, IsString } from 'class-validator';
-
+import { IsNotEmpty, IsNumberString, IsString, Length } from 'class-validator';
+// TODO inserir as mensagens
 export class AddressDTO {
+  
+  @IsNotEmpty()
   @IsString()
-  readonly rua: string;
+  @IsNumberString({ message: 'Cep must be a number' })
+  @Length(8,10)
+  readonly CEP: string;
+ 
+  @IsNotEmpty()
   @IsString()
-  readonly cidade: string;
-  @IsNumber()
-  readonly numero: string;
+  readonly street: string;
+
+  @IsNotEmpty()
   @IsString()
-  readonly bairro: number;
+  readonly city: string;
+
+  @IsNotEmpty()
+  @IsNumberString()
+  readonly number:string;
+
+  @IsNotEmpty()
+  @IsString()
+  readonly neighborhood: string;
+
+  @IsNotEmpty()
+  @IsString()
+  readonly state: string;
+  
+  @IsString()
   readonly complemento: string | null;
 }
