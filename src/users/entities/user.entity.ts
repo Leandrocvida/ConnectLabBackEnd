@@ -25,7 +25,7 @@ export class UserEntity {
   @Column({ nullable: false })
   password: string;
 
-  @OneToOne((type) => UserAddressEntity, { eager: true, cascade: true })
+  @OneToOne(() => UserAddressEntity, { eager: true, cascade: true })
   @JoinColumn({ name: 'userAddressId' })
   UserAddress: UserAddressEntity;
 
