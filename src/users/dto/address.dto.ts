@@ -3,9 +3,9 @@ import { IsNotEmpty, IsNumberString, IsString, Length } from 'class-validator';
 export class AddressDTO {
   
   @IsNotEmpty()
-  @IsString()
-  @IsNumberString({ message: 'Cep must be a number' })
-  @Length(8,10)
+  // @IsString()
+  // @IsNumberString({ message: 'Cep must be a number' })
+  // @Length(8,10)
   readonly CEP: string;
  
   @IsNotEmpty()

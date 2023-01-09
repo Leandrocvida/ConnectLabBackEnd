@@ -20,7 +20,9 @@ export class UsersService {
     newUser.email = createUserDto.email;
     newUser.password = createUserDto.password;
     newUser.phone = createUserDto.phone;
+    newUser.salt = "TODO"
     newUser.userAddress = new UserAddressEntity();
+    newUser.userAddress.CEP = createUserDto.userAddress.CEP;
     newUser.userAddress.street = createUserDto.userAddress.street;
     newUser.userAddress.city = createUserDto.userAddress.city;
     newUser.userAddress.number = createUserDto.userAddress.number;
