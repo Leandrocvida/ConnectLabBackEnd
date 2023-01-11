@@ -34,8 +34,8 @@ export class CreateUserDto {
   readonly password: string;
 
   @IsString()
-  @MinLength(6)
-  @MaxLength(20)
+  @MinLength(8)
+  @MaxLength(30)
   @Match('password')
   readonly passwordConfirmation: string;
 

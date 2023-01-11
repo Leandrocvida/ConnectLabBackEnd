@@ -2,6 +2,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { AddressDTO } from './dto/address.dto';
 import { CreateUserDto } from './dto/create-user.dto';
+import { FindOneUserDTO } from './dto/find-one-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserAddressEntity } from './entities/address.entity';
 import { UserEntity } from './entities/user.entity';
@@ -48,15 +49,18 @@ export class UsersService {
   }
 
 
- 
-  findAll() {
-    return `This action returns all users`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
+  async findOne(param: FindOneUserDTO): Promise<UserEntity> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const found = await this.userRepository.findOne({
+                where: param
+            })
+            resolve(found)
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
