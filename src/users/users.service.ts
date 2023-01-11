@@ -1,11 +1,11 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { AddressDTO } from './dto/address.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { FindOneUserDTO } from './dto/find-one-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserAddressEntity } from './entities/address.entity';
 import { UserEntity } from './entities/user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -21,7 +21,7 @@ export class UsersService {
     newUser.email = createUserDto.email;
     newUser.password = createUserDto.password;
     newUser.phone = createUserDto.phone;
-    newUser.salt = "TODO"
+    newUser.salt = await bcrypt.genSalt(12);
     newUser.userAddress = new UserAddressEntity();
     newUser.userAddress.CEP = createUserDto.userAddress.CEP;
     newUser.userAddress.street = createUserDto.userAddress.street;
@@ -38,8 +38,6 @@ export class UsersService {
         resolve(response);
       }
       catch (error) {
-        console.log('-- insert error --');
-        console.log(error);
         reject({
           code: error.code,
           detail: error.detail,

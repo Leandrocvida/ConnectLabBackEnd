@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete,  HttpException, HttpStatus, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete,  HttpException, HttpStatus, Res, UnprocessableEntityException } from '@nestjs/common';
 import { Response } from 'express';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -11,8 +11,12 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+ async create(@Body() createUserDto: CreateUserDto) {
+    if (createUserDto.password != createUserDto.passwordConfirmation) {
+      throw new UnprocessableEntityException('As senhas não conferem.')
+  }
+
+    return await this.usersService.create(createUserDto);
   }
 
 
