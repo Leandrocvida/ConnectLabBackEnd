@@ -25,16 +25,6 @@ export class DevicesService {
     });
   }
 
-  async findOne(param: BuscarDispositivoDTO): Promise<DispositivoEntity> {
-    return new Promise(async (resolve, reject) => {
-      try {
-        resolve(await this.dispositivoRepository.findOneBy({ id_dispositivo: param.id_dispositivo }));
-      } catch (error) {
-        reject(error);
-      }
-    });
-  }
-
   update(id: number, updateDeviceDto: UpdateDeviceDto) {
     return `This action updates a #${id} device`;
   }

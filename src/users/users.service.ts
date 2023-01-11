@@ -19,9 +19,9 @@ export class UsersService {
     newUser.userName = createUserDto.userName;
     newUser.photoURL = createUserDto.photoURL;
     newUser.email = createUserDto.email;
-    newUser.password = createUserDto.password;
     newUser.phone = createUserDto.phone;
     newUser.salt = await bcrypt.genSalt(12);
+    newUser.password = await bcrypt.hash(createUserDto.password,  newUser.salt);
     newUser.userAddress = new UserAddressEntity();
     newUser.userAddress.CEP = createUserDto.userAddress.CEP;
     newUser.userAddress.street = createUserDto.userAddress.street;

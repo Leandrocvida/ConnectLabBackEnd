@@ -15,8 +15,10 @@ export class UsersController {
     if (createUserDto.password != createUserDto.passwordConfirmation) {
       throw new UnprocessableEntityException('As senhas não conferem.')
   }
-
-    return await this.usersService.create(createUserDto);
+const userResponse = await this.usersService.create(createUserDto);
+delete userResponse.password
+delete userResponse.salt
+    return userResponse
   }
 
 
