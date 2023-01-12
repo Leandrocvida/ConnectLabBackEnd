@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete,  HttpException, HttpStatus, Res, UnprocessableEntityException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete,  HttpException, HttpStatus, Res, UnprocessableEntityException, Put, Request } from '@nestjs/common';
 import { Response } from 'express';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdatePasswordDTO } from './dto/updatePassword.dto';
 import { FindOneUserDTO } from './dto/find-one-user.dto';
 import { UserEntity } from './entities/user.entity';
+import { UseGuards } from '@nestjs/common/decorators';
+import { JwtAuthGuard } from 'src/core/auth/guards/jwt-auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -38,10 +40,18 @@ delete userResponse.salt
     }
 }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+@UseGuards(JwtAuthGuard)
+@Put()
+async updatePassword (@Body() updatePassword: UpdatePasswordDTO, @Request() req, @Res() response: Response) : Promise<Response> {
+    const usuario = await this.usersService.update(updatePassword, req.user.id);
+  if (usuario) {
+    return response
+    .status(HttpStatus.OK)
+    .send('Senha alterada com sucesso');
   }
+      
+}
+
 
   @Delete(':id')
   remove(@Param('id') id: string) {

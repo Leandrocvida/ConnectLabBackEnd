@@ -1,8 +1,8 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, HttpException, HttpStatus } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { FindOneUserDTO } from './dto/find-one-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdatePasswordDTO } from './dto/updatePassword.dto';
 import { UserAddressEntity } from './entities/address.entity';
 import { UserEntity } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
@@ -59,9 +59,43 @@ export class UsersService {
         }
     })
 }
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+ 
+
+  async update(param: UpdatePasswordDTO, idlogged: number): Promise<boolean> {
+    const userToUpdate = await this.userRepository.findOne({
+      where: {
+          id: idlogged
+      }
+  })
+  if (userToUpdate=== null) {
+    throw new HttpException('usuário não encontrado', HttpStatus.BAD_REQUEST)
   }
+
+const passwordTocCheck = await bcrypt.hash(param.oldPassword ,  userToUpdate.salt);
+if (userToUpdate.password != passwordTocCheck) {
+  throw new HttpException('senha inválida', HttpStatus.BAD_REQUEST)
+}
+
+const passwordToUpdate = await bcrypt.hash(param.newPassword,  userToUpdate.salt);
+
+  
+    return new Promise(async (resolve, reject) => {
+      try {
+        const response =  await this.userRepository.update({ id: idlogged },{password: passwordToUpdate });
+        const { affected } = response;
+        if (affected === 0) {
+            reject({
+                code: 20000,
+                detail: 'Este ID não está presente no banco de dados ou não foi possível atualizar.'
+            })
+        }
+        resolve(true)
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
 
   remove(id: number) {
     return `This action removes a #${id} user`;
