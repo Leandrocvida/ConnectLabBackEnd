@@ -3,7 +3,6 @@ import { Response } from 'express';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDTO } from './dto/updatePassword.dto';
-import { FindOneUserDTO } from './dto/find-one-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { UseGuards } from '@nestjs/common/decorators';
 import { JwtAuthGuard } from 'src/core/auth/guards/jwt-auth.guard';
@@ -23,17 +22,19 @@ delete userResponse.salt
     return userResponse
   }
 
-
-  @Get(':id')
-  async findOne(@Param() params: FindOneUserDTO, @Res() response: Response): Promise<UserEntity> {
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  async findOne(@Request() req, @Res() response: Response): Promise<UserEntity> {
     try {
-        const founded = await this.usersService.findOne(params);
+        const founded = await this.usersService.findOne(req.user.id);
+        delete founded.id;
+        delete founded.password;
+        delete founded.salt;        
         if (founded) {
             response.status(HttpStatus.OK).send(founded)
             return founded;
         }
-        response.status(HttpStatus.OK).send(`Nenhum usuário encontrado com o ID ${params.id}`)
-        // throw new HttpException('Nenhum usuário encontrado com o ID', HttpStatus.OK)   
+        response.status(HttpStatus.OK).send(`Não foi possivel encontrar dados deste usuário`)
 
     } catch (err) {
         throw new HttpException({ reason: err?.detail }, HttpStatus.BAD_REQUEST)
@@ -52,7 +53,7 @@ async updatePassword (@Body() updatePassword: UpdatePasswordDTO, @Request() req,
       
 }
 
-
+@UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);

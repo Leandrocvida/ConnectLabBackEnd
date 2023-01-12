@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn
 import { UserEntity } from 'src/users/entities/user.entity';
 import { DeviceEntity } from 'src/devices/entities/device.entity';
 
-@Entity({ name: 'connectlab.dispositivos_usuario' })
+@Entity({ name: 'dispositivos_usuario' })
 export class BindingEntity {
     @PrimaryGeneratedColumn()
     id_devices_user: number;

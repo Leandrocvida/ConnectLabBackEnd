@@ -1,4 +1,13 @@
-import { Controller, Post, Body, HttpStatus, Res, Query, Get, Request } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpStatus,
+  Res,
+  Query,
+  Get,
+  Request,
+} from '@nestjs/common';
 import { BindingService } from './binding.service';
 import { BindDeviceDTO } from './dto/bindDevice.dto';
 import { Response } from 'express';
@@ -10,13 +19,15 @@ import { JwtAuthGuard } from 'src/core/auth/guards/jwt-auth.guard';
 @Controller('binding')
 export class BindingController {
   constructor(private readonly bindingService: BindingService) {}
-  
+
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(
     @Body() createBindingDto: BindDeviceDTO,
     @Res() response: Response,
+    @Request() req,
   ) {
+    createBindingDto.user = req.user.id;
     try {
       const dispositivoAdicionado =
         await this.bindingService.vincularDispositivo(createBindingDto);
@@ -34,16 +45,19 @@ export class BindingController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-async obterListaDispositivosUsuario(@Query() params, @Request() req, @Res() response: Response): Promise<BindingEntity[]> {
-  try {
-    const devices =  await this.bindingService.findBy(req.user.id, params);
-    if (devices) {
-      response.status(HttpStatus.OK).send(devices)
-      return devices;
+  async obterListaDispositivosUsuario(
+    @Query() params,
+    @Request() req,
+    @Res() response: Response,
+  ): Promise<BindingEntity[]> {
+    try {
+      const devices = await this.bindingService.findBy(req.user.id, params);
+      if (devices) {
+        response.status(HttpStatus.OK).send(devices);
+        return devices;
+      }
+    } catch (error) {
+      throw new HttpException({ reason: error.detail }, HttpStatus.BAD_REQUEST);
     }
-  } catch (error) {
-    throw new HttpException({ reason: error.detail }, HttpStatus.BAD_REQUEST)
   }
-
-}
 }

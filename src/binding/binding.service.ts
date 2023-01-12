@@ -8,8 +8,8 @@ import { BindingEntity } from './entities/binding.entity';
 export class BindingService {
   
   constructor(
-    @Inject('VINCULACAO_REPOSITORY')
-    private vincularDispositivoRepository: Repository<BindingEntity>
+    @Inject('BINDING_REPOSITORY')
+    private bindingRepository: Repository<BindingEntity>
   ) {}
 
   async vincularDispositivo(param: BindDeviceDTO): Promise<BindingEntity> {
@@ -18,7 +18,7 @@ export class BindingService {
         ...param,id_devices_user: 0
     });
       try {
-        const response = await this.vincularDispositivoRepository.save(entidade);
+        const response = await this.bindingRepository.save(entidade);
         resolve(response);
       } catch (error) {
                 reject({
@@ -36,11 +36,11 @@ export class BindingService {
       try {
         if (param) {
           resolve(
-            await this.vincularDispositivoRepository.findBy({ local: param.local, user: LoggedUserId }),
+            await this.bindingRepository.findBy({ local: param.local, user: LoggedUserId }),
           );
         }
         resolve(
-          await this.vincularDispositivoRepository.findBy({user: LoggedUserId }),
+          await this.bindingRepository.findBy({user: LoggedUserId }),
         );
       } catch (error) {
         reject(error);

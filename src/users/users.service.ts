@@ -47,12 +47,10 @@ export class UsersService {
   }
 
 
-  async findOne(param: FindOneUserDTO): Promise<UserEntity> {
+  async findOne(idJWT: number): Promise<UserEntity> {
     return new Promise(async (resolve, reject) => {
         try {
-            const found = await this.userRepository.findOne({
-                where: param
-            })
+            const found = await this.userRepository.findOneBy({ id: idJWT})
             resolve(found)
         } catch (error) {
             reject(error)
