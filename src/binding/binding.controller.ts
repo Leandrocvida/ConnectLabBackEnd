@@ -53,8 +53,13 @@ export class BindingController {
     try {
       const devices = await this.bindingService.findBy(req.user.id, params);
       if (devices) {
+        const responseArray = []
+        for ( const i of devices){
+          i.user = null;
+          responseArray.push(i);
+        }
         response.status(HttpStatus.OK).send(devices);
-        return devices;
+        return responseArray;
       }
     } catch (error) {
       throw new HttpException({ reason: error.detail }, HttpStatus.BAD_REQUEST);
